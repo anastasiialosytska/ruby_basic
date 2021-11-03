@@ -62,7 +62,7 @@ class Route
   end
 
   def show_stations
-    @final_route.each { |station| puts station.name }
+    final_route.each { |station| puts station.name }
   end
 
 end
@@ -70,7 +70,7 @@ end
 class Train
 
   attr_reader :number, :type
-  attr_accessor :carriage_quantity, :speed, :current_station
+  attr_accessor :carriage_quantity, :speed, :current_station, :current_index
 
   def initialize(number, type, carriage_quantity)
     @number = number
@@ -109,18 +109,26 @@ class Train
     @current_station = route.final_route[0]
   end
 
-  def move_next_station
-    route.final_route.each { |i| @final_route[i+1].take_train(self) }
+  def current_index(route)
+    route.final_route.index(@current_station)
   end
 
-  def move_previous_station
-
+  def move_next_station(route)
+    @current_station.send_train(self)
+    @current_station = route.final_route[current_index(route) +1]
+    @current_station.take_train(self)
   end
 
-  def show_sations_around
-    puts "Текущая станция: #{self.current_station}"
-    puts "Предыдущая станция: "
-    puts "Следующая станция: "
+  def move_previous_station(route)
+    @current_station.send_train(self)
+    @current_station = route.final_route[current_index(route) -1]
+    @current_station.take_train(self)
+  end
+
+  def show_stations_around(route)
+    puts "Текущая станция: #{self.current_station.name}"
+    puts "Предыдущая станция: #{route.final_route[current_index(route) -1].name}"
+    puts "Следующая станция: #{route.final_route[current_index(route) +1].name}"
   end
 
  end

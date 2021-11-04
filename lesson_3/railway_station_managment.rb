@@ -39,22 +39,16 @@ class Station
 end
 
 class Route
-  attr_reader :first_station, :last_station
+  attr_reader :first_station, :last_station, :stations
 
   def initialize(first_station, last_station)
     @first_station = first_station
     @last_station = last_station
-    @stations = []
-  end
-
-  def final_route
-    @final_route = []
-    @final_route << first_station << @stations << last_station
-    @final_route.flatten!
+    @stations = [first_station, last_station]
   end
 
   def add_station(station)
-    @stations << station
+    @stations.insert(-2, station)
   end
 
   def delete_station(station)
@@ -62,7 +56,7 @@ class Route
   end
 
   def show_stations
-    final_route.each { |station| puts station.name }
+    @stations.each { |station| puts station.name }
   end
 
 end
@@ -105,30 +99,30 @@ class Train
   end
 
   def follow_route(route)
-    route.final_route[0].take_train(self)
-    @current_station = route.final_route[0]
+    route.stations[0].take_train(self)
+    @current_station = route.stations[0]
   end
 
   def current_index(route)
-    route.final_route.index(@current_station)
+    route.stations.index(@current_station)
   end
 
   def move_next_station(route)
     @current_station.send_train(self)
-    @current_station = route.final_route[current_index(route) +1]
+    @current_station = route.stations[current_index(route) +1]
     @current_station.take_train(self)
   end
 
   def move_previous_station(route)
     @current_station.send_train(self)
-    @current_station = route.final_route[current_index(route) -1]
+    @current_station = route.stations[current_index(route) -1]
     @current_station.take_train(self)
   end
 
   def show_stations_around(route)
     puts "Текущая станция: #{self.current_station.name}"
-    puts "Предыдущая станция: #{route.final_route[current_index(route) -1].name}"
-    puts "Следующая станция: #{route.final_route[current_index(route) +1].name}"
+    puts "Предыдущая станция: #{route.stations[current_index(route) -1].name}"
+    puts "Следующая станция: #{route.stations[current_index(route) +1].name}"
   end
 
  end

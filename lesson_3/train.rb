@@ -1,14 +1,14 @@
 class Train
 
   attr_reader :number, :type
-  attr_accessor :carriage_quantity, :speed, :current_station, :current_index
+  attr_accessor :carriages, :speed, :current_station, :current_index
 
-  def initialize(number, type, carriage_quantity)
+  def initialize(number, type)
     @number = number
     @type = type
-    @carriage_quantity = carriage_quantity
     @speed = 0
     @current_station = nil
+    @carriages = []
   end
 
   def go(speed)
@@ -27,12 +27,12 @@ class Train
     puts "Количество вагонов: #{self.carriage_quantity}"
   end
 
-  def add_carriage
-    self.carriage_quantity += 1 if self.speed == 0
+  def add_carriage(carriage)
+    @carriages << carriage if self.type == carriage.type && self.speed == 0
   end
 
   def delete_carriage
-    self.carriage_quantity -= 1 if self.speed == 0
+    @carriages.pop if self.speed == 0
   end
 
   def follow_route(route)
@@ -60,6 +60,30 @@ class Train
     puts "Текущая станция: #{self.current_station.name}"
     puts "Предыдущая станция: #{route.stations[current_index(route) -1].name}"
     puts "Следующая станция: #{route.stations[current_index(route) +1].name}"
+  end
+
+ end
+
+ class PassengerTrain < Train
+
+  attr_reader :type
+  attr_accessor :carriages
+
+  def initialize(number, type)
+    super
+    @type = "passenger"
+  end
+
+ end
+
+ class CargoTrain < Train
+
+  attr_reader :type
+  attr_accessor :carriages
+
+  def initialize(number, type)
+    super
+    @type = "cargo"
   end
 
  end

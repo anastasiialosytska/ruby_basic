@@ -1,5 +1,5 @@
 class Station
-  
+
   attr_reader :name
 
   def initialize(name)
@@ -36,5 +36,4 @@ class Station
   def send_train(train)
     @trains.delete(train)
   end
-
 end

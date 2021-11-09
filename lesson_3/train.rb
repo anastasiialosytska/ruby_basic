@@ -11,16 +11,8 @@ class Train
     @carriages = []
   end
 
-  def go(speed)
-    self.speed = speed
-  end
-
   def current_speed
     puts "Текущая скорость: #{self.speed} км/ч"
-  end
-
-  def stop
-    self.speed = 0
   end
 
   def check_carriage_quantity
@@ -38,10 +30,6 @@ class Train
   def follow_route(route)
     route.stations[0].take_train(self)
     @current_station = route.stations[0]
-  end
-
-  def current_index(route)
-    route.stations.index(@current_station)
   end
 
   def move_next_station(route)
@@ -62,28 +50,18 @@ class Train
     puts "Следующая станция: #{route.stations[current_index(route) +1].name}"
   end
 
- end
+  protected
+  #методы ниже должны быть доступны для потомков PassengerTrain и CargoTrain, а для других классов не доступны, поэтому помещены в protected
 
- class PassengerTrain < Train
-
-  attr_reader :type
-  attr_accessor :carriages
-
-  def initialize(number, type)
-    super
-    @type = "passenger"
+  def go(speed)
+    self.speed = speed
   end
 
- end
-
- class CargoTrain < Train
-
-  attr_reader :type
-  attr_accessor :carriages
-
-  def initialize(number, type)
-    super
-    @type = "cargo"
+  def stop
+    self.speed = 0
   end
 
- end
+  def current_index(route)
+    route.stations.index(@current_station)
+  end
+end

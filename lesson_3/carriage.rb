@@ -1,22 +1,4 @@
 class Carriage
-  attr_reader :type
- 
-end
-
-class PassengerCarriage < Carriage
   
-  def initialize(type)
-    @type = "passenger"
-  end
-
+  attr_reader :type
 end
-
-class CargoCarriage < Carriage
-
-  def initialize(type)
-    @type = "cargo"
-  end
-
-end
-
-

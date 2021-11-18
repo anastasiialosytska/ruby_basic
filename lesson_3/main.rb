@@ -1,3 +1,4 @@
+require_relative 'manufacturer_name'
 require_relative 'station'
 require_relative 'route'
 require_relative 'train'
@@ -218,3 +219,5 @@ class Menu
     end
   end
 end
+
+#menu = Menu.new.call

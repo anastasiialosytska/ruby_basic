@@ -1,22 +1,13 @@
 class Train
 
   include ManufacturerName
+  include InstanceCounter
   attr_reader :number, :type
   attr_accessor :carriages, :speed, :current_station, :current_index
 
   @@all_trains = []
 
   def self.find(train_number)
-    # @@all_trains.each do |train|
-      # puts "значение в аргументе #{train_number}"
-      # puts "значение в методе #{train.number}"
-      # if train_number == train.number
-      #   return train
-      # else
-      #   return nil
-      # end
-
-    # end
     @@all_trains.find { |train| train.number == train_number }
   end
 
@@ -28,6 +19,7 @@ class Train
     @carriages = []
     @manufacturer_name = nil
     @@all_trains << self
+    register_instance
   end
 
   def current_speed

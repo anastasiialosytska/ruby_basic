@@ -2,10 +2,12 @@ class Train
 
   include ManufacturerName
   include InstanceCounter
+  include Valid
   attr_reader :number, :type
   attr_accessor :carriages, :speed, :current_station, :current_index
 
   @@trains = []
+  TRAIN_NUMBER = /^[\dа-я]{3}-?[\dа-я]{2}$/i
 
   def self.find(train_number)
     @@trains.find { |train| train.number == train_number }
@@ -20,6 +22,7 @@ class Train
     @manufacturer_name = nil
     @@trains << self
     register_instance
+    validate!
   end
 
   def current_speed
@@ -74,5 +77,12 @@ class Train
 
   def current_index(route)
     route.stations.index(@current_station)
+  end
+
+  def validate!
+    raise "Неверный тип поезда" if @type != "passenger" && @type != "cargo"
+    raise "Не указан тип поезда" if @type == nil
+    raise "Не указан номер поезда" if @number == nil
+    raise "Некорректный номер поезда" if @number !~ TRAIN_NUMBER
   end
 end

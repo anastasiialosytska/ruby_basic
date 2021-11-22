@@ -1,19 +1,22 @@
 class Station
 
   include InstanceCounter
+  include Valid
   attr_reader :name
 
-  @@all_stations = []
+  @@stations = []
+  STATION_NAME = /^[А-Я][а-я]{2,19}$/
 
   def self.all
-    return @@all_stations
+    @@stations
   end
 
   def initialize(name)
     @name = name
     @trains = []
-    @@all_stations << self
+    @@stations << self
     register_instance
+    validate!
   end
 
   def take_train(train)
@@ -24,13 +27,13 @@ class Station
     @trains.each { |train| puts train.number }
   end
 
-  def show_freight_trains
-    freight_trains = []
+  def show_cargo_trains
+    cargo_trains = []
     @trains.each do |train|
-      freight_trains << train if train.type == "freight"
-      puts train.number if train.type == "freight"
+      cargo_trains << train if train.type == "cargo"
+      puts train.number if train.type == "cargo"
     end
-    puts "На станции #{self.name} грузовых поездов: #{freight_trains.count}"
+    puts "На станции #{self.name} грузовых поездов: #{cargo_trains.count}"
   end
 
   def show_passenger_trains
@@ -44,5 +47,11 @@ class Station
 
   def send_train(train)
     @trains.delete(train)
+  end
+
+  private
+
+  def validate!
+    raise "Название станции должно начинаться с большой буквы и содержать от 3 до 20 симовлов" if STATION_NAME !~ @name
   end
 end

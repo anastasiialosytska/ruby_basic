@@ -1,4 +1,5 @@
 require_relative 'instance_counter'
+require_relative 'valid'
 require_relative 'manufacturer_name'
 require_relative 'station'
 require_relative 'route'
@@ -44,13 +45,19 @@ class Menu
       @station_name = gets.chomp
       create_station
     when 2
-      puts "Выберите тип поезда:"
-      puts "1. Пассажирский"
-      puts "2. Грузовой"
-      @train_type = gets.to_i
-      print "Введите номер поезда: "
-      @train_number = gets.chomp
-      create_train
+      
+        puts "Выберите тип поезда:"
+        puts "1. Пассажирский"
+        puts "2. Грузовой"
+        @train_type = gets.to_i
+      begin
+        print "Введите номер поезда: "
+        @train_number = gets.chomp
+        create_train
+      rescue
+        puts "Некорректный номер поезда. Укажите номер в формате ХХХ-ХХ"
+        retry
+      end
     when 3
       print "Введите начальную станцию: "
       @first_station = gets.chomp
@@ -123,6 +130,7 @@ class Menu
       trains[@train_number] = CargoTrain.new(@train_number, "cargo")
       puts "Создан грузовой поезд с номером #{@train_number}"
     end
+
   end
 
   def create_route
@@ -221,4 +229,4 @@ class Menu
   end
 end
 
-#menu = Menu.new.call
+menu = Menu.new.call

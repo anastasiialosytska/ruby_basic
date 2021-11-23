@@ -80,9 +80,13 @@ class Train
   end
 
   def validate!
-    raise "Неверный тип поезда" if @type != "passenger" && @type != "cargo"
-    raise "Не указан тип поезда" if @type == nil
-    raise "Не указан номер поезда" if @number == nil
-    raise "Некорректный номер поезда" if @number !~ TRAIN_NUMBER
+    errors = []
+
+    errors << "Неверный тип поезда" if @type != "passenger" && @type != "cargo"
+    errors << "Не указан тип поезда" if @type == nil
+    errors << "Не указан номер поезда" if @number == nil
+    errors << "Некорректный номер поезда" if @number !~ TRAIN_NUMBER
+
+    raise errors.join(;) unless errors.empty?
   end
 end

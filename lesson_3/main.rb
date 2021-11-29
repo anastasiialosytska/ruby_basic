@@ -35,8 +35,7 @@ class Menu
     puts "11. Посмотреть список станций на маршруте"
     puts "12. Посмотреть список поездов на станции"
     puts "13. Просмотреть список вагонов поезда"
-    puts "14. Занять место в пассажирском вагоне"
-    puts "15. Занять объем в грузовом вагоне"
+    puts "14. Занять место в вагоне"
     puts "0. Выход"
     print "Выберите вариант: "
     self.input = gets.to_i
@@ -122,14 +121,6 @@ class Menu
       print "Введите номер вагона: "
       @carriage_number = gets.to_i
       take_place
-    when 15
-      print "Введите номер поезда: "
-      @train_number = gets.chomp
-      print "Введите номер вагона: "
-      @carriage_number = gets.to_i
-      print "ВВедите объем, который необходимо занять: "
-      @value = gets.to_i
-      take_value
     end
     end
   end
@@ -194,12 +185,12 @@ class Menu
     if @train.class == PassengerTrain && @trains.keys.include?(@train_number)
       print "Укажите количество мест в вагоне: "
       @place_quantity = gets.to_i
-      @train.add_carriage(PassengerCarriage.new(@place_quantity, 'passenger', @carriage_number))
+      @train.add_carriage(PassengerCarriage.new('passenger', @place_quantity, @carriage_number))
       puts "К поезду #{@train_number} прицеплен пассажирский вагон #{@carriage_number}"
     elsif @train.class == CargoTrain && @trains.keys.include?(@train_number)
       print "Укажите объем вагона: "
-      @general_value = gets.to_i
-      @train.add_carriage(CargoCarriage.new(@general_value, 'cargo', @carriage_number))
+      @general_volume = gets.to_i
+      @train.add_carriage(CargoCarriage.new('cargo', @general_volume, @carriage_number))
       puts "К поезду #{@train_number} прицеплен грузовой вагон #{@carriage_number}"
     else
       puts "Поезд с таким номером не существует. Сначала создайте поезд"
@@ -262,15 +253,15 @@ class Menu
       train.all_carriages do |carriage|
         puts "Номер вагона: #{carriage.number}"
         puts "Тип вагона: пассажирский"
-        puts "Количество свободных мест: #{carriage.place_quantity - carriage.occupied_places}"
-        puts "Количество занятых мест: #{carriage.occupied_places}"
+        puts "Количество свободных мест: #{carriage.free_place}"
+        puts "Количество занятых мест: #{carriage.used_place}"
       end
     elsif train.class == CargoTrain && @trains.keys.include?(@train_number)
       train.all_carriages do |carriage|
         puts "Номер вагона: #{carriage.number}"
         puts "Тип вагона: грузовой"
-        puts "Количество свободного объема: #{carriage.general_value - carriage.occupied_value}"
-        puts "Количество занятого объема: #{carriage.occupied_value}"
+        puts "Количество свободного объема: #{carriage.free_place}"
+        puts "Количество занятого объема: #{carriage.used_place}"
       end
     else
       puts "Поезд с таким номером не существует. Сначала создайте поезд"
@@ -281,24 +272,14 @@ class Menu
     train = @trains[@train_number]
     if train.class == PassengerTrain && @trains.keys.include?(@train_number)
       train.carriages[@carriage_number - 1].take_place
-      puts "Место в вагоне #{@carriage_number} занято"
-    elsif train.class == CargoTrain
-      puts "Поезд #{@train_number} грузовой, занять место невозможно"
+    elsif train.class == CargoTrain && @trains.keys.include?(@train_number)
+      print 'Введите объем, который хотите занять: '
+      volume = gets.to_i
+      train.carriages[@carriage_number - 1].take_place(volume)
     else
       puts "Поезд с таким номером не существует. Сначала создайте поезд"
-    end   
-  end
-
-  def take_value
-    train = @trains[@train_number]
-    if train.class == CargoTrain && @trains.keys.include?(@train_number)
-      train.carriages[@carriage_number - 1].take_value(@value)
-      puts "Объем в вагоне #{@carriage_number} занят"
-    elsif train.class == PassengerTrain
-      puts "Поезд #{@train_number} пассажирский, объем занять невозможно"
-    else
-      puts "Поезд с таким номером не существует. Сначала создайте поезд"
-    end 
+    end
+    puts "Место в вагоне #{@carriage_number} занято"
   end
 end
 

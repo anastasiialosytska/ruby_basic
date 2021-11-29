@@ -16,6 +16,6 @@ class Carriage
     errors << "Неверный тип вагона" if @type != "passenger" && @type != "cargo"
     errors << "Не указан тип вагона" if @type == nil
 
-    raise errors.join(;) unless errors.empty?
+    raise errors.join(';') unless errors.empty?
   end
 end

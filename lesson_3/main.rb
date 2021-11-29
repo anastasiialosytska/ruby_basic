@@ -34,6 +34,9 @@ class Menu
     puts "10. Переместить поезд на предыдущую станцию"
     puts "11. Посмотреть список станций на маршруте"
     puts "12. Посмотреть список поездов на станции"
+    puts "13. Просмотреть список вагонов поезда"
+    puts "14. Занять место в пассажирском вагоне"
+    puts "15. Занять объем в грузовом вагоне"
     puts "0. Выход"
     print "Выберите вариант: "
     self.input = gets.to_i
@@ -44,19 +47,18 @@ class Menu
       print "Введите название станции: "
       @station_name = gets.chomp
       create_station
-    when 2
-      
-        puts "Выберите тип поезда:"
-        puts "1. Пассажирский"
-        puts "2. Грузовой"
-        @train_type = gets.to_i
+    when 2 
+      puts "Выберите тип поезда:"
+      puts "1. Пассажирский"
+      puts "2. Грузовой"
+      @train_type = gets.to_i
       begin
         print "Введите номер поезда: "
         @train_number = gets.chomp
         create_train
       rescue
         puts "Некорректный номер поезда. Укажите номер в формате ХХХ-ХХ"
-        retry
+      retry
       end
     when 3
       print "Введите начальную станцию: "
@@ -110,12 +112,29 @@ class Menu
       print "Введите название станции: "
       @station_name = gets.chomp
       show_trains
+    when 13
+      print "Введите номер поезда: "
+      @train_number = gets.chomp
+      all_carriages
+    when 14
+      print "Введите номер поезда: "
+      @train_number = gets.chomp
+      print "Введите номер вагона: "
+      @carriage_number = gets.to_i
+      take_place
+    when 15
+      print "Введите номер поезда: "
+      @train_number = gets.chomp
+      print "Введите номер вагона: "
+      @carriage_number = gets.to_i
+      print "ВВедите объем, который необходимо занять: "
+      @value = gets.to_i
+      take_value
     end
     end
   end
 
   private
-  #все методы ниже нужны только для отработки метода call, поэтому могут быть помещены в секцию private
 
   def create_station
     stations[@station_name] = Station.new(@station_name)
@@ -130,7 +149,6 @@ class Menu
       trains[@train_number] = CargoTrain.new(@train_number, "cargo")
       puts "Создан грузовой поезд с номером #{@train_number}"
     end
-
   end
 
   def create_route
@@ -171,12 +189,18 @@ class Menu
   end
 
   def add_carriage
-    if @trains[@train_number].class == PassengerTrain && @trains.keys.include?(@train_number)
-      @trains[@train_number].add_carriage(PassengerCarriage.new("passenger"))
-      puts "К поезду #{@train_number} прицеплен пассажирский вагон"
-    elsif @trains[@train_number].class == CargoTrain && @trains.keys.include?(@train_number)
-      @trains[@train_number].add_carriage(CargoCarriage.new("cargo"))
-      puts "К поезду #{@train_number} прицеплен грузовой вагон"
+    @train = @trains[@train_number]
+    @carriage_number = @train.carriages.count + 1
+    if @train.class == PassengerTrain && @trains.keys.include?(@train_number)
+      print "Укажите количество мест в вагоне: "
+      @place_quantity = gets.to_i
+      @train.add_carriage(PassengerCarriage.new(@place_quantity, 'passenger', @carriage_number))
+      puts "К поезду #{@train_number} прицеплен пассажирский вагон #{@carriage_number}"
+    elsif @train.class == CargoTrain && @trains.keys.include?(@train_number)
+      print "Укажите объем вагона: "
+      @general_value = gets.to_i
+      @train.add_carriage(CargoCarriage.new(@general_value, 'cargo', @carriage_number))
+      puts "К поезду #{@train_number} прицеплен грузовой вагон #{@carriage_number}"
     else
       puts "Поезд с таким номером не существует. Сначала создайте поезд"
     end
@@ -222,10 +246,59 @@ class Menu
   def show_trains
     station = @stations[@station_name]
     if @stations.keys.include?(@station_name)
-      station.show_trains
+      station.trains_on_station do |train|
+        puts "Номер поезда: #{train.number}"
+        puts "Тип поезда: #{train.type}"
+        puts "Количество вагонов: #{train.check_carriage_quantity}"
+      end
     else
       print "Указанная станция не существует"
     end
+  end
+
+  def all_carriages
+    train = @trains[@train_number]
+    if train.class == PassengerTrain && @trains.keys.include?(@train_number)
+      train.all_carriages do |carriage|
+        puts "Номер вагона: #{carriage.number}"
+        puts "Тип вагона: пассажирский"
+        puts "Количество свободных мест: #{carriage.place_quantity - carriage.occupied_places}"
+        puts "Количество занятых мест: #{carriage.occupied_places}"
+      end
+    elsif train.class == CargoTrain && @trains.keys.include?(@train_number)
+      train.all_carriages do |carriage|
+        puts "Номер вагона: #{carriage.number}"
+        puts "Тип вагона: грузовой"
+        puts "Количество свободного объема: #{carriage.general_value - carriage.occupied_value}"
+        puts "Количество занятого объема: #{carriage.occupied_value}"
+      end
+    else
+      puts "Поезд с таким номером не существует. Сначала создайте поезд"
+    end
+  end
+
+  def take_place
+    train = @trains[@train_number]
+    if train.class == PassengerTrain && @trains.keys.include?(@train_number)
+      train.carriages[@carriage_number - 1].take_place
+      puts "Место в вагоне #{@carriage_number} занято"
+    elsif train.class == CargoTrain
+      puts "Поезд #{@train_number} грузовой, занять место невозможно"
+    else
+      puts "Поезд с таким номером не существует. Сначала создайте поезд"
+    end   
+  end
+
+  def take_value
+    train = @trains[@train_number]
+    if train.class == CargoTrain && @trains.keys.include?(@train_number)
+      train.carriages[@carriage_number - 1].take_value(@value)
+      puts "Объем в вагоне #{@carriage_number} занят"
+    elsif train.class == PassengerTrain
+      puts "Поезд #{@train_number} пассажирский, объем занять невозможно"
+    else
+      puts "Поезд с таким номером не существует. Сначала создайте поезд"
+    end 
   end
 end
 

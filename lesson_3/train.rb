@@ -30,7 +30,7 @@ class Train
   end
 
   def check_carriage_quantity
-    puts "Количество вагонов: #{self.carriage_quantity}"
+    @carriages.count
   end
 
   def add_carriage(carriage)
@@ -64,6 +64,10 @@ class Train
     puts "Следующая станция: #{route.stations[current_index(route) +1].name}"
   end
 
+  def all_carriages(&block)
+    @carriages.each(&block)
+  end
+
   protected
   #методы ниже должны быть доступны для потомков PassengerTrain и CargoTrain, а для других классов не доступны, поэтому помещены в protected
 
@@ -87,6 +91,6 @@ class Train
     errors << "Не указан номер поезда" if @number == nil
     errors << "Некорректный номер поезда" if @number !~ TRAIN_NUMBER
 
-    raise errors.join(;) unless errors.empty?
+    raise errors.join(';') unless errors.empty?
   end
 end

@@ -49,6 +49,10 @@ class Station
     @trains.delete(train)
   end
 
+  def trains_on_station(&block)
+    @trains.each(&block)
+  end
+
   private
 
   def validate!

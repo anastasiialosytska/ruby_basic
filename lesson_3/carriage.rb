@@ -4,7 +4,7 @@ class Carriage
   include Valid
   attr_reader :type, :total_place, :used_place, :number
 
-  def initialize(type, total_place, number)
+  def initialize(total_place, type, number)
     @type = type
     @total_place = total_place
     @used_place = 0

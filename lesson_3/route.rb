@@ -1,5 +1,4 @@
 class Route
-
   include InstanceCounter
   attr_reader :first_station, :last_station, :stations
 

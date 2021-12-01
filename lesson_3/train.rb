@@ -1,5 +1,4 @@
 class Train
-
   include ManufacturerName
   include InstanceCounter
   include Valid
@@ -26,7 +25,7 @@ class Train
   end
 
   def current_speed
-    puts "Текущая скорость: #{self.speed} км/ч"
+    puts "Текущая скорость: #{speed} км/ч"
   end
 
   def check_carriage_quantity
@@ -34,11 +33,11 @@ class Train
   end
 
   def add_carriage(carriage)
-    @carriages << carriage if self.type == carriage.type && self.speed == 0
+    @carriages << carriage if type == carriage.type && speed == 0
   end
 
   def delete_carriage
-    @carriages.pop if self.speed == 0
+    @carriages.pop if speed == 0
   end
 
   def follow_route(route)
@@ -48,20 +47,20 @@ class Train
 
   def move_next_station(route)
     @current_station.send_train(self)
-    @current_station = route.stations[current_index(route) +1]
+    @current_station = route.stations[current_index(route) + 1]
     @current_station.take_train(self)
   end
 
   def move_previous_station(route)
     @current_station.send_train(self)
-    @current_station = route.stations[current_index(route) -1]
+    @current_station = route.stations[current_index(route) - 1]
     @current_station.take_train(self)
   end
 
   def show_stations_around(route)
-    puts "Текущая станция: #{self.current_station.name}"
-    puts "Предыдущая станция: #{route.stations[current_index(route) -1].name}"
-    puts "Следующая станция: #{route.stations[current_index(route) +1].name}"
+    puts "Текущая станция: #{current_station.name}"
+    puts "Предыдущая станция: #{route.stations[current_index(route) - 1].name}"
+    puts "Следующая станция: #{route.stations[current_index(route) + 1].name}"
   end
 
   def all_carriages(&block)
@@ -69,7 +68,8 @@ class Train
   end
 
   protected
-  #методы ниже должны быть доступны для потомков PassengerTrain и CargoTrain, а для других классов не доступны, поэтому помещены в protected
+
+  # методы ниже должны быть доступны для потомков PassengerTrain и CargoTrain, а для других классов не доступны, поэтому помещены в protected
 
   def go(speed)
     self.speed = speed
@@ -86,10 +86,10 @@ class Train
   def validate!
     errors = []
 
-    errors << "Неверный тип поезда" if @type != "passenger" && @type != "cargo"
-    errors << "Не указан тип поезда" if @type == nil
-    errors << "Не указан номер поезда" if @number == nil
-    errors << "Некорректный номер поезда" if @number !~ TRAIN_NUMBER
+    errors << 'Неверный тип поезда' if @type != 'passenger' && @type != 'cargo'
+    errors << 'Не указан тип поезда' if @type.nil?
+    errors << 'Не указан номер поезда' if @number.nil?
+    errors << 'Некорректный номер поезда' if @number !~ TRAIN_NUMBER
 
     raise errors.join(';') unless errors.empty?
   end

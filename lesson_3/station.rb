@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class Station
   include InstanceCounter
   include Valid
   attr_reader :name
 
   @@stations = []
-  STATION_NAME = /^[А-Я][а-я]{2,19}$/
+  STATION_NAME = /^[А-Я][а-я]{2,19}$/.freeze
 
   def self.all
     @@stations

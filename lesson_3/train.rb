@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 class Train
   include ManufacturerName
   include InstanceCounter
   include Valid
   attr_reader :number, :type
-  attr_accessor :carriages, :speed, :current_station, :current_index
+  attr_accessor :carriages, :speed, :current_station
 
   @@trains = []
-  TRAIN_NUMBER = /^[\dа-я]{3}-?[\dа-я]{2}$/i
+  TRAIN_NUMBER = /^[\dа-я]{3}-?[\dа-я]{2}$/i.freeze
 
   def self.find(train_number)
     @@trains.find { |train| train.number == train_number }
@@ -33,11 +35,11 @@ class Train
   end
 
   def add_carriage(carriage)
-    @carriages << carriage if type == carriage.type && speed == 0
+    @carriages << carriage if type == carriage.type && speed.zero?
   end
 
   def delete_carriage
-    @carriages.pop if speed == 0
+    @carriages.pop if speed.zero?
   end
 
   def follow_route(route)
@@ -68,8 +70,6 @@ class Train
   end
 
   protected
-
-  # методы ниже должны быть доступны для потомков PassengerTrain и CargoTrain, а для других классов не доступны, поэтому помещены в protected
 
   def go(speed)
     self.speed = speed

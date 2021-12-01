@@ -1,8 +1,6 @@
-class CargoCarriage < Carriage
-  def initialize(total_place, type, number)
-    super
-  end
+# frozen_string_literal: true
 
+class CargoCarriage < Carriage
   def take_place(volume)
     @used_place += volume
   end

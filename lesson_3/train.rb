@@ -1,14 +1,17 @@
 # frozen_string_literal: true
 
 class Train
+  extend Validation
+  extend Accessors
   include ManufacturerName
   include InstanceCounter
-  include Valid
   attr_reader :number, :type
   attr_accessor :carriages, :speed, :current_station
 
-  @@trains = []
   TRAIN_NUMBER = /^[\dа-я]{3}-?[\dа-я]{2}$/i.freeze
+  @@trains = []
+
+  validate :number, presence: true, type: String, format: TRAIN_NUMBER
 
   def self.find(train_number)
     @@trains.find { |train| train.number == train_number }
@@ -81,16 +84,5 @@ class Train
 
   def current_index(route)
     route.stations.index(@current_station)
-  end
-
-  def validate!
-    errors = []
-
-    errors << 'Неверный тип поезда' if @type != 'passenger' && @type != 'cargo'
-    errors << 'Не указан тип поезда' if @type.nil?
-    errors << 'Не указан номер поезда' if @number.nil?
-    errors << 'Некорректный номер поезда' if @number !~ TRAIN_NUMBER
-
-    raise errors.join(';') unless errors.empty?
   end
 end

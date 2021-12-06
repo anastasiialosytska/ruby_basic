@@ -3,6 +3,8 @@
 require_relative 'instance_counter'
 require_relative 'valid'
 require_relative 'manufacturer_name'
+require_relative 'accessors'
+require_relative 'validate'
 require_relative 'station'
 require_relative 'route'
 require_relative 'train'
@@ -26,5 +28,5 @@ class Main
     @routs = {}
   end
 
-  Main.new.call
+  # Main.new.call
 end

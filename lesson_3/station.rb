@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 class Station
+  extend Accessors
+  extend Validation
   include InstanceCounter
-  include Valid
   attr_reader :name
 
   @@stations = []
   STATION_NAME = /^[А-Я][а-я]{2,19}$/.freeze
+
+  validate :name, presence: true, type: String, format: STATION_NAME
 
   def self.all
     @@stations
@@ -52,11 +55,5 @@ class Station
 
   def trains_on_station(&block)
     @trains.each(&block)
-  end
-
-  private
-
-  def validate!
-    raise 'Название станции должно начинаться с большой буквы и содержать от 3 до 20 симовлов' if STATION_NAME !~ @name
   end
 end

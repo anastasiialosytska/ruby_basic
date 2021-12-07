@@ -1,12 +1,12 @@
 module Validation
   def validate(name, options = {})
     define_method(:validate!) do
-      attribut = instance_variable_get("@#{name}".to_sym)
-      if options[:presence] && (attribut.nil? || attribut == '')
+      attribute = instance_variable_get("@#{name}".to_sym)
+      if options[:presence] && (attribute.nil? || attribute == '')
         raise 'Set the value of variable!'
-      elsif options[:format] && attribut.to_s !~ options[:format]
+      elsif options[:format] && attribute.to_s !~ options[:format]
         raise 'Incorrect format!'
-      elsif options[:type] && !attribut.instance_of?(options[:type])
+      elsif options[:type] && !attribute.instance_of?(options[:type])
         raise 'Incorrect type!'
       end
     end
